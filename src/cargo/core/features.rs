@@ -206,6 +206,9 @@ features! {
 
         // Allow to specify profiles other than 'dev', 'release', 'test', etc.
         [unstable] named_profiles: bool,
+        
+        // Customize the build output file name
+        [unstable] filestem: bool,
     }
 }
 

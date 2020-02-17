@@ -232,7 +232,14 @@ fn clean_lib(
         (None, _, _) => vec![LibKind::Lib],
     };
 
-    let mut target = Target::lib_target(&lib.name(), crate_types, path, edition);
+    let filestem = match lib.filestem {
+        // TODO: Check that `name` is a valid filename
+        Some(ref name) => name,
+        // TODO: Default to libcrate_name.extension
+        None => "",
+    };
+
+    let mut target = Target::lib_target(&lib.name(), crate_types, path, edition, filestem);
     configure(features, lib, &mut target)?;
     Ok(Some(target))
 }
@@ -313,8 +320,15 @@ fn clean_bins(
             Err(e) => anyhow::bail!("{}", e),
         };
 
+        let filestem = match bin.filestem {
+            // TODO: Check that `name` is a valid filename
+            Some(ref name) => name,
+            // TODO: Default to crate_name
+            None => "",
+        };
+
         let mut target =
-            Target::bin_target(&bin.name(), path, bin.required_features.clone(), edition);
+            Target::bin_target(&bin.name(), path, bin.required_features.clone(), edition, filestem);
         configure(features, bin, &mut target)?;
         result.push(target);
     }

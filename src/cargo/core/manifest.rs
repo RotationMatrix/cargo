@@ -241,6 +241,7 @@ pub struct Target {
     for_host: bool,
     proc_macro: bool,
     edition: Edition,
+    filestem: String,
 }
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -339,6 +340,7 @@ compact_debug! {
                                 kinds.clone(),
                                 self.src_path().path().unwrap().to_path_buf(),
                                 self.edition,
+                                &self.filestem,
                             ),
                             format!("lib_target({:?}, {:?}, {:?}, {:?})",
                                     self.name, kinds, self.src_path, self.edition),
@@ -384,6 +386,7 @@ compact_debug! {
                 for_host
                 proc_macro
                 edition
+                filestem
             )]
         }
     }
@@ -619,6 +622,7 @@ impl Target {
             edition,
             tested: true,
             benched: true,
+            filestem: String::new(),
         }
     }
 
@@ -631,12 +635,14 @@ impl Target {
         crate_targets: Vec<LibKind>,
         src_path: PathBuf,
         edition: Edition,
+        filestem: &str,
     ) -> Target {
         Target {
             kind: TargetKind::Lib(crate_targets),
             name: name.to_string(),
             doctest: true,
             doc: true,
+            filestem: filestem.to_string(),
             ..Target::with_path(src_path, edition)
         }
     }
@@ -646,12 +652,14 @@ impl Target {
         src_path: PathBuf,
         required_features: Option<Vec<String>>,
         edition: Edition,
+        filestem: &str,
     ) -> Target {
         Target {
             kind: TargetKind::Bin,
             name: name.to_string(),
             required_features,
             doc: true,
+            filestem: filestem.to_string(),
             ..Target::with_path(src_path, edition)
         }
     }
